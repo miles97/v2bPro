@@ -23,5 +23,7 @@ setup (props) {
 }
 ```
 
-
-
+以及生命周期按需引入的关系 直接在
+```
+import { reactive, onMounted, ref, toRefs } from 'vue'
+```
