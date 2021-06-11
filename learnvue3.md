@@ -133,3 +133,8 @@ this.$emit('update:visible', false)
     @update:content="content"
 />
 不知道你有没有发现，这个写法完全没有.async什么事儿了， 所以啊，Vue 3 中又抛弃了.async写法， 统一使用v-model
+  
+  
+  
+  #### vite创建项目体验 以及打包相关
+  
