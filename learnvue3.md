@@ -185,7 +185,7 @@ npm install -D stylus
 
 Vite 也同样支持 PostCSS，如果项目包含有效的 PostCSS 配置 (任何受 postcss-load-config 支持的格式，例如 postcss.config.js)，它将会自动应用于所有已导入的 CSS。
 Vite 原生支持各种文件类型读取打包，无需像 webpack 一样配置各种 loader ,Vite 可以使用插件进行扩展，这得益于 Rollup 优秀的插件接口设计和一部分 Vite 独有的额外选项。这意味着 Vite 用户可以利用 Rollup 插件的强大生态系统，同时根据需要也能够扩展开发服务器和 SSR 功能。
-尝试编写 demo
+尝试编写 demo```
 //packages/omi-cli/template/vite/src/main.tsx
 
 import { WeElement, h, tag, render, } from 'omi'
@@ -205,14 +205,14 @@ export default class extends WeElement<HelloProps> {
 }
 
 render(<my-app name = 'Omi' > </hello-omi>, '#root')
-
+```
 3.配置 Vite.config.js
 写完 Demo 运行一下
 
 运行成功，正当我感觉万事大吉的时候
 
 就奇怪 OMI 项目怎么会跑出 React 呢，由于 OMI 使用了 webcomponent + jsx 的形式，仔细一想是不是 JSX 的问题，于是查阅官方文档发现 .jsx 和 .tsx 文件同样开箱即用。JSX 的翻译同样是通过 ESBuild，默认为 React 16 形式。所以并没有执行 OMI 中对 JSX 的解析，需要在 Vite.config.js 中修改配置
-
+```
 于是照葫芦画瓢由于接口设计一致一通 Ctrl CV 猛如虎
 export default {
   esbuild: {
@@ -220,7 +220,7 @@ export default {
     jsxFragment: 'Fragment'
   }
 }
-
+```
 至此整个项目已经可以正常运行
 后面的就剩下完善一下 DEMO 的完整性了。
 是的 Vite 使用起来就是这么简单，全部配置没超过十行。
@@ -233,7 +233,7 @@ Vite 使用 Rollup 对项目进行打包，rollup打包出来的体积都比webp
 
 webpackrollup开发模式大小52.8KB19.46KB生产打包大小10.3KB7.66KB生产包gzip后大小4.1KB3.4KB
 同样 Vite 也为应用打包提前做好了配置，但是我们这次要尝试的是库文件，所以需要对配置进行一些修改
-构建过程可以通过多种构建配置选项来自定义，可以通过 vite.config.js 中的 build 选项进行配置
+构建过程可以通过多种构建配置选项来自定义，可以通过 vite.config.js 中的 build 选项进行配置```
 const path = require('path')
 
 module.exports = {
@@ -258,9 +258,9 @@ module.exports = {
     }
   }
 }
-
+```
 当需要构建你的库用于发布时，请使用 build.lib 配置项，请确保将你不想打包进你库中的依赖进行外部化，例如 vue 或 react：
-// vite.config.js
+// vite.config.js```
 const path = require('path')
 
 module.exports = {
@@ -281,16 +281,16 @@ module.exports = {
     }
   }
 }
-
-运行 vite build 配合如上配置将会使用一套 Rollup 预设，为发行该库提供两种构建格式：es 和 umd（在 build.lib 中配置的）：
+```
+运行 vite build 配合如上配置将会使用一套 Rollup 预设，为发行该库提供两种构建格式：es 和 umd（在 build.lib 中配置的）：```
 $ vite build
 building for production...
 [write] my-lib.es.js 0.08kb, brotli: 0.07kb
 [write] my-lib.umd.js 0.30kb, brotli: 0.16kb
-
+```
   
 当然你也可以通过底层的 rollup 配置文件去自定义打包配置，通过 build.rollupOptions 直接调整底层的 Rollup 选项：
-编写 rollup.config.js
+编写 ```rollup.config.js
 //rollup.config.js
 export default RollupConfig = {
     input: 'src/lib/index.ts',
@@ -301,8 +301,8 @@ export default RollupConfig = {
     },
     plugins: [],
 }
-
-vite.config.js 中引入
+```
+vite.config.js 中引入```
 import rollupConfig from './rollup.config'
 
 module.exports = {
@@ -310,5 +310,5 @@ module.exports = {
     rollupOptions: rollupConfig
   }
 }
-
+```
 rollup.config.js 需要根据项目需求自行配置
