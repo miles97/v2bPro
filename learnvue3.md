@@ -138,3 +138,177 @@ this.$emit('update:visible', false)
   
   #### vite创建项目体验 以及打包相关
   
+Vite 是什么
+Vite 是一种新型前端构建工具，能够显著提升前端开发体验。它主要由两部分组成：
+
+一个开发服务器，它基于 原生 ES 模块 提供了 丰富的内建功能，如速度快到惊人的 模块热更新（HMR）。
+一套构建指令，它使用 Rollup 打包你的代码，并且它是预配置的，可输出用于生产环境的高度优化过的静态资源。
+
+Vite 意在提供开箱即用的配置，同时它的 插件 API 和 JavaScript API 带来了高度的可扩展性，并有完整的类型支持。
+为什么使用 Vite
+Vite 的开箱即用的配置非常让人省心，省去了很多繁琐复杂的 webpack 和 babel 配置流程，原生支持 TypeScript 的打包，调试的时候基本秒开项目，拥抱 ES Module 无需打包并且支持实时热更新。
+或许有的人说不是由很多现成的脚手架可以直接使用了吗。Vue3 和 React 项目目前到时都有不错的基于 Vite
+的脚手架工具，但是我面对的是一个比较冷门的 Web框架 的脚手架迁移。
+使用 Vite 创建 OMI 脚手架
+什么是 OMI
+OMI-前端【跨框架】框架，既能以 Web Components 自定义标签形式赋能前端生态，如(react、vue、preact)，也可自成一套体系加速 Web 和 小程序前端开发。
+OMI 可以说是一个可以用 JSX + WebComponent 的一个开发框架，加入 OMI 的周边生态开发中也学到了很多，包括源码上以及框架设计上的很多知识，与其主要贡献者也交流了很多次，也算是一种尝试加入开源社区的一种实践。
+尝试使用 OMI-Vite 脚手架
+安装与初始化项目
+npm install -g omi-cli
+omi init-vit my-app
+
+基于 Vite 开发配置 OMI 脚手架
+脚手架的主要功能就是（处理用户命令行输入，拉取项目模板，以及一部分自动化脚本）
+Vite 作为一种新型前端构建工具，当然不仅仅适用于 Vue 的生态，目前以及支持了很多的模板。如(Vue,react,preact,lit-element,svelte)
+
+1.使用 Vite 初始化项目模板
+npm init @vitejs/app
+
+这里直接选择 vanilla-ts （原生 TypeScript 项目）
+
+敲击回车 Vite 项目初始化完成
+2. 配置 OMI 项目开发环境
+安装 OMI
+npm install omi
+
+安装开发依赖
+Vite 支持各种主流 CSS 预处理器，只需要安装依赖开箱即用零配置
+# .scss and .sass
+npm install -D sass
+
+# .less
+npm install -D less
+
+# .styl and .stylus
+npm install -D stylus
+
+Vite 也同样支持 PostCSS，如果项目包含有效的 PostCSS 配置 (任何受 postcss-load-config 支持的格式，例如 postcss.config.js)，它将会自动应用于所有已导入的 CSS。
+Vite 原生支持各种文件类型读取打包，无需像 webpack 一样配置各种 loader ,Vite 可以使用插件进行扩展，这得益于 Rollup 优秀的插件接口设计和一部分 Vite 独有的额外选项。这意味着 Vite 用户可以利用 Rollup 插件的强大生态系统，同时根据需要也能够扩展开发服务器和 SSR 功能。
+尝试编写 demo
+//packages/omi-cli/template/vite/src/main.tsx
+
+import { WeElement, h, tag, render, } from 'omi'
+
+interface HelloProps {
+  name: string
+}
+
+@tag('hello-omi')
+export default class extends WeElement<HelloProps> {
+
+  render(props) {
+    return (
+      <div>Hello{props.name}</div>
+		)
+  }
+}
+
+render(<my-app name = 'Omi' > </hello-omi>, '#root')
+
+3.配置 Vite.config.js
+写完 Demo 运行一下
+
+运行成功，正当我感觉万事大吉的时候
+
+就奇怪 OMI 项目怎么会跑出 React 呢，由于 OMI 使用了 webcomponent + jsx 的形式，仔细一想是不是 JSX 的问题，于是查阅官方文档发现 .jsx 和 .tsx 文件同样开箱即用。JSX 的翻译同样是通过 ESBuild，默认为 React 16 形式。所以并没有执行 OMI 中对 JSX 的解析，需要在 Vite.config.js 中修改配置
+
+于是照葫芦画瓢由于接口设计一致一通 Ctrl CV 猛如虎
+export default {
+  esbuild: {
+    jsxFactory: 'h',
+    jsxFragment: 'Fragment'
+  }
+}
+
+至此整个项目已经可以正常运行
+后面的就剩下完善一下 DEMO 的完整性了。
+是的 Vite 使用起来就是这么简单，全部配置没超过十行。
+使用 Vite (Rollup 进行库打包)
+Vite 使用 Rollup 对项目进行打包，rollup打包出来的体积都比webpack略小一些，可读性也较高一些，可以看到的是像React、Vue等框架的构建工具使用的都是使用 rollup 进行打包，都使用 Vite 了没道理不尝试一下。
+
+
+
+
+
+webpackrollup开发模式大小52.8KB19.46KB生产打包大小10.3KB7.66KB生产包gzip后大小4.1KB3.4KB
+同样 Vite 也为应用打包提前做好了配置，但是我们这次要尝试的是库文件，所以需要对配置进行一些修改
+构建过程可以通过多种构建配置选项来自定义，可以通过 vite.config.js 中的 build 选项进行配置
+const path = require('path')
+
+module.exports = {
+  build: {
+    lib: {
+      entry: path.resolve(__dirname, 'lib/index.ts'),
+      name: 'cnmLib'
+        },
+    }
+}
+
+官方推荐在自己的库中的 package.json 这样配置
+{
+  "name": "my-lib",
+  "files": ["dist"],
+  "main": "./dist/my-lib.umd.js",
+  "module": "./dist/my-lib.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/my-lib.es.js",
+      "require": "./dist/my-lib.umd.js"
+    }
+  }
+}
+
+当需要构建你的库用于发布时，请使用 build.lib 配置项，请确保将你不想打包进你库中的依赖进行外部化，例如 vue 或 react：
+// vite.config.js
+const path = require('path')
+
+module.exports = {
+  build: {
+    lib: {
+      entry: path.resolve(__dirname, 'lib/main.js'),
+      name: 'MyLib'
+    },
+    rollupOptions: {
+      // 请确保外部化那些你的库中不需要的依赖
+      external: ['vue'],
+      output: {
+        // 在 UMD 构建模式下为这些外部化的依赖提供一个全局变量
+        globals: {
+          vue: 'Vue'
+        }
+      }
+    }
+  }
+}
+
+运行 vite build 配合如上配置将会使用一套 Rollup 预设，为发行该库提供两种构建格式：es 和 umd（在 build.lib 中配置的）：
+$ vite build
+building for production...
+[write] my-lib.es.js 0.08kb, brotli: 0.07kb
+[write] my-lib.umd.js 0.30kb, brotli: 0.16kb
+
+  
+当然你也可以通过底层的 rollup 配置文件去自定义打包配置，通过 build.rollupOptions 直接调整底层的 Rollup 选项：
+编写 rollup.config.js
+//rollup.config.js
+export default RollupConfig = {
+    input: 'src/lib/index.ts',
+    output: {
+        name: 'core',
+        file: 'dist/lib/core.js',
+        format: 'umd',
+    },
+    plugins: [],
+}
+
+vite.config.js 中引入
+import rollupConfig from './rollup.config'
+
+module.exports = {
+  build: {
+    rollupOptions: rollupConfig
+  }
+}
+
+rollup.config.js 需要根据项目需求自行配置
