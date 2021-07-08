@@ -39,6 +39,7 @@ Dialog从用户感知的层面，应该是一个独立的组件，从 dom 结构
   Teleport 的使用
 我们希望 Dialog 渲染的 dom 和顶层组件是兄弟节点关系, 在index.html文件中定义一个供挂载的元素:
 <body>
+
   <div id="app"></div>
   <div id="dialog"></div>
 </body>
@@ -115,7 +116,7 @@ this.$emit('update:visible', false)
 此时我们也可以使用v-bind.sync来简化实现：
 <modal :visible.sync="isVisible"></modal>
 
-  
+
 上面回顾了 Vue2 中v-model实现以及组件属性的双向绑定，那么在 Vue 3 中应该怎样实现的呢？
 在 Vue3 中, 在自定义组件上使用v-model, 相当于传递一个modelValue 属性， 同时触发一个update:modelValue事件：
 <modal v-model="isVisible"></modal>
@@ -133,11 +134,11 @@ this.$emit('update:visible', false)
     @update:content="content"
 />
 不知道你有没有发现，这个写法完全没有.async什么事儿了， 所以啊，Vue 3 中又抛弃了.async写法， 统一使用v-model
+
   
-  
-  
+
   #### vite创建项目体验 以及打包相关
-  
+
 Vite 是什么
 Vite 是一种新型前端构建工具，能够显著提升前端开发体验。它主要由两部分组成：
 
@@ -288,7 +289,7 @@ building for production...
 [write] my-lib.es.js 0.08kb, brotli: 0.07kb
 [write] my-lib.umd.js 0.30kb, brotli: 0.16kb
 ```
-  
+
 当然你也可以通过底层的 rollup 配置文件去自定义打包配置，通过 build.rollupOptions 直接调整底层的 Rollup 选项：
 编写 ```rollup.config.js
 //rollup.config.js

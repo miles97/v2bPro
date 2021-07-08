@@ -39,5 +39,30 @@
 
 
 
+4.使用less或者styl等css与渲染器进行简单的css开发
+
+规范的定义一些常用的全局颜色，常用的改变字体颜色以及宽高的方法。方便构建样式文件代码
+
+```js
+// //宽高
+.wh(@width, @height){
+  width: @width;
+  height: @height;
+}
+
+// //字体大小，颜色
+.sc(@size, @color){
+  font-size: @size;
+  color: @color;
+}
+@import './base.less';
+@primary: #1baeae; // 主题色
+@orange: #FF6B01; 
+@bc: #F7F7F7;
+@fc:#fff;
+```
+
+
+
 
 
